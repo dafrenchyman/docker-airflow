@@ -61,12 +61,14 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
+    && pip install kubernetes \
     && pip install apache-airflow[all]==$AIRFLOW_VERSION \
     && pip install airflow-plugins \
     && pip install 'celery[redis]>=4.1.1,<4.2.0' \
     && apt-get purge --auto-remove -yqq $buildDeps \
     && apt-get autoremove -yqq --purge \
     && apt-get clean \
+    && mkdir -p ${AIRFLOW_HOME}/.kube \
     && rm -rf \
         /var/lib/apt/lists/* \
         /tmp/* \

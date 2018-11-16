@@ -25,6 +25,7 @@ ENV LC_CTYPE en_US.UTF-8
 ENV LC_MESSAGES en_US.UTF-8
 
 # I had issues with older versions of psycopg2, just a warning
+# && pip install 'celery[redis]>=4.1.1,<4.2.0' \
 RUN set -ex \
     && buildDeps=' \
         freetds-dev \
@@ -72,7 +73,7 @@ RUN set -ex \
     && pip install psycopg2-binary==2.7.4  \
     && pip install apache-airflow[all]==$AIRFLOW_VERSION \
     && pip install airflow-plugins \
-    && pip install 'celery[redis]>=4.1.1,<4.2.0' \
+    && pip install celery[redis] \
     && apt-get purge --auto-remove -yqq $buildDeps \
     && apt-get autoremove -yqq --purge \
     && apt-get clean \

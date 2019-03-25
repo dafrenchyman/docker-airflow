@@ -1,6 +1,6 @@
-# VERSION 1.10.0-2
+# VERSION 1.10.2
 # AUTHOR: Matthieu "Puckel_" Roisil
-# MODIFIED BY: Julien "Dafrenchyman" Pierret 
+# MODIFIED BY: Julien "Dafrenchyman" Pierret
 # DESCRIPTION: Basic Airflow container
 # BUILD: docker build --rm -t puckel/docker-airflow .
 # SOURCE: https://github.com/puckel/docker-airflow
@@ -15,6 +15,8 @@ ENV TERM linux
 # Airflow
 ARG AIRFLOW_VERSION=1.10.2
 ARG AIRFLOW_HOME=/usr/local/airflow
+ARG AIRFLOW_DEPS=""
+ARG PYTHON_DEPS=""
 ENV AIRFLOW_GPL_UNIDECODE yes
 
 # Define en_US.
@@ -25,10 +27,11 @@ ENV LC_CTYPE en_US.UTF-8
 ENV LC_MESSAGES en_US.UTF-8
 
 # I had issues with older versions of psycopg2, just a warning
+# && pip install 'celery[redis]>=4.1.1,<4.2.0' \
+
 RUN set -ex \
     && buildDeps=' \
         freetds-dev \
-        python3-dev \
         libkrb5-dev \
         libsasl2-dev \
         libssl-dev \
@@ -44,10 +47,6 @@ RUN set -ex \
         $buildDeps \
         freetds-bin \
         build-essential \
-        python3-pip \
-        python3-requests \
-        mysql-client \
-        mysql-server \
         default-libmysqlclient-dev \
         apt-utils \
         curl \
@@ -72,8 +71,8 @@ RUN set -ex \
     && pip install psycopg2-binary==2.7.4  \
     && pip install apache-airflow[all]==$AIRFLOW_VERSION \
     && pip install airflow-plugins \
-    && pip install 'celery[redis]>=4.1.1,<4.2.0' \
-    && pip install redis==2.10.6 \
+    && pip install 'redis>=2.10.5,<3' \
+    && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && apt-get purge --auto-remove -yqq $buildDeps \
     && apt-get autoremove -yqq --purge \
     && apt-get clean \

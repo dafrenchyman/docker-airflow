@@ -84,6 +84,7 @@ case "$1" in
     exec airflow "$@"
     ;;
   flower)
+    sleep 10
     exec airflow "$@"
     ;;
   version)

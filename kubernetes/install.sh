@@ -43,22 +43,22 @@ setup () {
   ##########################################
   # Install Tiller on the cluster
   ##########################################
-  
+
   # add a service account within a namespace to segregate tiller
   kubectl --namespace kube-system create sa tiller
-  
+
   # create a cluster role binding for tiller
   kubectl create clusterrolebinding tiller \
     --clusterrole cluster-admin \
-    --serviceaccount=kube-system:tiller 
-  
+    --serviceaccount=kube-system:tiller
+
   helm init --service-account tiller
   echo "Waiting for tiller to come up (30 seconds)"
   sleep 30
 
   # Wait for Tiller to launch
   #while [ $(kubectl -n kube-system get po | grep tiller | awk '$2 == "1/1" { print $2 }') != "1/1" ]
-  #do 
+  #do
   #  echo "Tiller not up yet"
   #  sleep 10
   #done
@@ -78,7 +78,7 @@ install_airflow () {
 
   # Setup namespace
   kubectl create namespace ${NAMESPACE}
-  
+
   # add a service account within a namespace for airflow
   # This will allow the worker nodes to spawn pods
   kubectl --namespace ${NAMESPACE} create sa airflow
@@ -88,14 +88,14 @@ install_airflow () {
 
   # Install via helm
   helm install --namespace "${NAMESPACE}" --name "airflow" --set airflow.fernet_key="$FERNET_KEY" .
-  
+
   # Wait a few seconds
   sleep 5
 
   # Make sure all services are up (All airflow services return 1 before moving on)
   is_done="FALSE"
   while [ "$is_done" != "TRUE" ]
-  do 
+  do
     airflow_pods_list=`kubectl get pods | grep airflow | awk '{ print $2 }'`
     is_done="TRUE"
     while read -r line; do
@@ -108,18 +108,18 @@ install_airflow () {
     done <<< "$airflow_pods_list"
     sleep 10
   done
-  
+
   ##############################################################
   # Copy kubernetes config to worker pod
   ##############################################################
-  
+
   # This section may no longer be needed anymore. It looks like
   # we can use the kubernetes operator and when we state it
-  # already is in the cluster, it already gets access 
+  # already is in the cluster, it already gets access
   # through the service account we've setup. kubectl needs
   # to be setup on the pod that needs to access the cluster
   # resources though.
-  
+
   COPY_KUBE_CONF="FALSE"
   if [ "$COPY_KUBE_CONF" == "TRUE" ]; then
     # Get a copy of the kubernetes config
@@ -139,15 +139,15 @@ install_airflow () {
       kubectl cp custom_kube_config ${AIRFLOW_WORKER_POD}:/usr/local/airflow/.kube/config
     done
   fi
-  
+
   ##############################################################
   # Create Secrets on the cluster
   ##############################################################
-  
+
   # Google credential secrets as file
-  kubectl create secret generic invoice-processing-env --from-env-file=./secrets.env 
+  kubectl create secret generic invoice-processing-env --from-env-file=./secrets.env
   kubectl create secret generic invoice-processing-google-app-cred --from-file=./google_app_creds.json
-  
+
   # Google credential secrets for pod ImagePullSecrets
   kubectl create secret docker-registry gcr-json-key \
     --docker-server=http://gcr.io \
@@ -157,7 +157,7 @@ install_airflow () {
 
   # Attach ImagePullSecrets to pod serviceaccount
   kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "gcr-json-key"}]}'
-  
+
   ##############################################################
   # Test connecting to cluster
   ##############################################################

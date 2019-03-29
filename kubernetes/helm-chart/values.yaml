@@ -75,6 +75,9 @@ airflow:
   ##     HTTP_PROXY: "http://proxy.mycompany.com:123"
   config:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
+    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: 60
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: America/Los_Angeles
+    AIRFLOW__CORE__SQL_ALCHEMY_POOL_SIZE: 0
     # SequentialExecutor, LocalExecutor, CeleryExecutor, DaskExecutor
     #AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: False

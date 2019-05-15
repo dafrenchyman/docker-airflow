@@ -28,14 +28,15 @@ uninstall_airflow() {
     echo "Purging: ${i}"
     kubectl delete pods $i --grace-period=0 --force
   done
-  
+
   # Delete airflow service account
-  kubectl delete clusterrolebinding airflow 
+  kubectl delete clusterrolebinding airflow
   kubectl delete serviceaccount airflow --namespace=${NAMESPACE}
-  
+
   # Delete secrets
   kubectl delete secret invoice-processing-env
   kubectl delete secret invoice-processing-google-app-cred
+  kubectl delete secret invoice-processing-invoice-processing-ocr-creds
   kubectl delete secret gcr-json-key
 }
 

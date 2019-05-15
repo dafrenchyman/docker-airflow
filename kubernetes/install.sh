@@ -147,6 +147,7 @@ install_airflow () {
   # Google credential secrets as file
   kubectl create secret generic invoice-processing-env --from-env-file=./secrets.env
   kubectl create secret generic invoice-processing-google-app-cred --from-file=./google_app_creds.json
+  kubectl create secret generic invoice-processing-invoice-processing-ocr-creds --from-file=./invoice-processing-ocr-creds.json
 
   # Google credential secrets for pod ImagePullSecrets
   kubectl create secret docker-registry gcr-json-key \

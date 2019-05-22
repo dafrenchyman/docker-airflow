@@ -80,6 +80,7 @@ airflow:
     AIRFLOW__CORE__SQL_ALCHEMY_POOL_SIZE: 0
     # SequentialExecutor, LocalExecutor, CeleryExecutor, DaskExecutor
     #AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__SCHEDULER__MAX_THREADS: 4
     AIRFLOW__WEBSERVER__EXPOSE_CONFIG: False
     AIRFLOW__WEBSERVER__AUTHENTICATE: True
     AIRFLOW__WEBSERVER__AUTH_BACKEND: airflow.contrib.auth.backends.password_auth
@@ -312,6 +313,7 @@ postgresql:
     ##
     ## Access mode:
     accessMode: ReadWriteOnce
+    size: 25Gi
 
 
 ## Configuration values for the Redis dependency.

@@ -37,6 +37,7 @@ uninstall_airflow() {
   kubectl delete secret invoice-processing-env
   kubectl delete secret invoice-processing-google-app-cred
   kubectl delete secret invoice-processing-invoice-processing-ocr-creds
+  kubectl delete secret invoice-processing-ocr-compress
   kubectl delete secret gcr-json-key
 }
 
